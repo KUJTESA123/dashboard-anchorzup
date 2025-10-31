@@ -22,12 +22,20 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/cdk": "^20.2.10",
     "@angular/common": "^20.3.0",
     "@angular/compiler": "^20.3.0",
     "@angular/core": "^20.3.0",
-    "@angular/forms": "^20.3.0",
+    "@angular/forms": "^20.3.9",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "angular-gridster2": "^20.2.3",
+    "angular-resizable-element": "^8.0.0",
+    "chart.js": "^4.4.1",
+    "chartjs-plugin-zoom": "^2.2.0",
+    "jspdf": "^3.0.3",
+    "jspdf-autotable": "^5.0.2",
+    "ng2-charts": "^6.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -43,6 +51,21 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "tailwindcss": "^3.4.18",
     "typescript": "~5.9.2"
-  }
+  },
+  "description": "This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.7.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KUJTESA123/dashboard-anchorzup.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/KUJTESA123/dashboard-anchorzup/issues"
+  },
+  "homepage": "https://github.com/KUJTESA123/dashboard-anchorzup#readme"
 }

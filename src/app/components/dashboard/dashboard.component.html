@@ -1,0 +1,292 @@
+<div class="min-h-screen bg-gray-50 p-6 text-gray-800 text-base">
+  <!-- Header -->
+  <div class="fixed top-0 left-0 right-0 z-50 bg-white rounded-b-xl shadow-sm p-4 flex justify-between items-start border-b border-gray-200">
+    <!-- Left Section: Angular Logo -->
+    <div class="flex items-center gap-2">
+      <img src="https://icones.pro/wp-content/uploads/2022/07/icone-angulaire-violet.png" 
+           alt="Angular Purple Logo" 
+           class="h-6 w-6">
+    </div>
+
+    <!-- Right Section: Save + Reset Buttons -->
+    <div class="flex items-center gap-2">
+      <button
+        (click)="saveLayout()"
+        class="bg-white text-black font-semibold px-4 py-2 rounded border border-gray-200 shadow-sm hover:bg-gray-100 transition flex items-center gap-2 text-sm">
+        <i class="fa-solid fa-floppy-disk"></i>
+        Save Layout
+      </button>
+
+      <button
+        (click)="resetLayout()"
+        class="bg-gray-200 px-3 py-2 rounded-md shadow-sm hover:bg-gray-300 transition text-sm"
+        title="Reset Layout">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4 text-gray-700">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 12a8 8 0 0113.657-5.657"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20 12a8 8 0 01-13.657 5.657"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 6h3v3"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="h-14"></div>
+
+  <!-- Global Filters Section -->
+  <div class="flex items-center justify-between gap-3 mb-4">
+    <!-- Customize Toggle -->
+    <div class="flex items-center gap-2">
+      <button
+        (click)="isCustomizing = !isCustomizing"
+        [class]="isCustomizing ? 
+          'bg-purple-700 text-white font-medium px-4 py-2 rounded shadow-sm transition text-sm' :
+          'bg-gray-200 text-gray-700 font-medium px-4 py-2 rounded shadow-sm hover:bg-gray-300 transition text-sm'">
+        {{ isCustomizing ? 'Stop Customizing' : 'Customize (Drag & Resize)' }}
+      </button>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 max-w-[980px] w-full">
+      <div class="flex flex-wrap gap-3 items-center justify-end">
+        <!-- Dataset Filter -->
+        <div class="flex-1 min-w-[300px]">
+          <select 
+            [(ngModel)]="globalFilters.dataset"
+            (change)="applyGlobalFilters()"
+            class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-purple-500 focus:border-purple-500 w-full bg-white">
+            <option value="sales">Sales Data</option>
+            <option value="users">User Analytics</option>
+            <option value="revenue">Revenue Reports</option>
+          </select>
+        </div>
+        
+        <!-- Time Range Filter -->
+        <div class="flex-1 min-w-[300px]">
+          <select 
+            [(ngModel)]="globalFilters.timeRange"
+            (change)="applyGlobalFilters()"
+            class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-purple-500 focus:border-purple-500 w-full bg-white">
+            <option value="7">Last 7 days</option>
+            <option value="30">Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="365">Last year</option>
+          </select>
+        </div>
+      </div>
+      
+  <div *ngIf="hasActiveFilters()" class="mt-2 flex items-center gap-2 text-sm text-purple-600">
+        <i class="fa-solid fa-filter"></i>
+        <span>Active filters: {{ getActiveFilterText() }}</span>
+        <button 
+          (click)="clearFilters()"
+          class="text-gray-500 hover:text-gray-700 ml-1">
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customization Panel -->
+  <div *ngIf="isCustomizing" class="bg-white rounded-xl border-2 border-dashed border-gray-300 shadow-sm p-4 mb-4 text-sm">
+    <h3 class="font-semibold mb-2 text-base">Customize Your Dashboard</h3>
+    
+    <!-- Add Widgets Section -->
+    <div class="mb-4">
+  <h4 class="font-medium text-gray-700 mb-2 text-sm">Add Widgets</h4>
+      <div class="flex flex-wrap gap-1">
+        <button
+          *ngFor="let widget of getAvailableWidgets()"
+          (click)="addWidget(widget.id)"
+          class="bg-purple-100 text-purple-700 px-3 py-1.5 rounded text-sm hover:bg-purple-200 transition border border-purple-200">
+          + {{ widget.title }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+  <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
+      <h4 class="font-medium text-blue-800 mb-1">How to customize:</h4>
+      <ul class="list-disc list-inside space-y-1">
+        <li><strong>Always:</strong> Drag and drop widgets to rearrange them</li>
+        <li><strong>In Customization Mode:</strong> Use S/M/L/XL buttons to resize widgets</li>
+        <li><strong>In Customization Mode:</strong> Click × to remove widgets</li>
+        <li><strong>In Customization Mode:</strong> Add new widgets using buttons above</li>
+        <li><strong>In Customization Mode:</strong> Drag resize handles on widget edges</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Dashboard Grid -->
+  <div 
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min">
+    
+    <!-- Widgets -->
+    <div
+      *ngFor="let widget of widgets"
+      cdkDrag
+      [class]="getWidgetClass(widget)">
+      
+      <!-- Widget Header -->
+      <div class="flex justify-between items-center p-3 border-b border-gray-100" cdkDragHandle>
+        <div class="flex items-center gap-1">
+          <h3 class="font-semibold text-gray-700 text-sm">{{ widget.title }}</h3>
+          <span *ngIf="hasActiveFilters()" class="bg-purple-100 text-purple-700 text-xs px-1 py-0.5 rounded-full">
+            Filtered
+          </span>
+        </div>
+    <div class="flex items-center gap-2 text-sm">
+          <button
+            (click)="toggleWidget(widget.id); $event.stopPropagation()"
+            class="text-gray-400 hover:text-gray-600 transition"
+            [title]="widget.show ? 'Hide widget' : 'Show widget'">
+            <i class="fa-solid" [class.fa-eye]="widget.show" [class.fa-eye-slash]="!widget.show"></i>
+          </button>
+          <i class="fa-solid fa-grip-vertical text-gray-400 cursor-move"></i>
+          <div *ngIf="isCustomizing" class="flex gap-1">
+            <button
+              (click)="resizeWidget(widget.id, 'small'); $event.stopPropagation()"
+              [class]="widget.size === 'small' ? 
+                'bg-purple-600 text-white px-2 py-1 rounded text-sm shadow-sm' :
+                'bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm hover:bg-gray-200 border border-gray-300'">
+              S
+            </button>
+            <button
+              (click)="resizeWidget(widget.id, 'medium'); $event.stopPropagation()"
+              [class]="widget.size === 'medium' ? 
+                'bg-purple-600 text-white px-2 py-1 rounded text-sm shadow-sm' :
+                'bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm hover:bg-gray-200 border border-gray-300'">
+              M
+            </button>
+            <button
+              (click)="resizeWidget(widget.id, 'large'); $event.stopPropagation()"
+              [class]="widget.size === 'large' ? 
+                'bg-purple-600 text-white px-2 py-1 rounded text-sm shadow-sm' :
+                'bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm hover:bg-gray-200 border border-gray-300'">
+              L
+            </button>
+            <button
+              (click)="resizeWidget(widget.id, 'x-large'); $event.stopPropagation()"
+              [class]="widget.size === 'x-large' ? 
+                'bg-purple-600 text-white px-2 py-1 rounded text-sm shadow-sm' :
+                'bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm hover:bg-gray-200 border border-gray-300'">
+              XL
+            </button>
+            <button
+              (click)="removeWidget(widget.id); $event.stopPropagation()"
+              class="bg-red-100 text-red-600 px-2 py-1 rounded text-sm hover:bg-red-200 border border-red-200">
+              ×
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Widget Content -->
+  <div class="p-4" [class]="getWidgetHeight(widget) + ' flex flex-col text-sm'">
+        <ng-container *ngIf="widget.show">
+          <div *ngIf="widget.id === 'totalSales'" class="h-full flex flex-col justify-center">
+            <span 
+              [class]="getTrendClass(filteredData.totalSales.trend)"
+              class="text-sm font-medium px-2 py-0.5 rounded mb-1">
+              {{ filteredData.totalSales.trend > 0 ? '+' : '' }}{{ filteredData.totalSales.trend }}%
+            </span>
+            <p class="text-3xl font-extrabold text-gray-900 mb-1">{{ filteredData.totalSales.value }}</p>
+            <p class="text-gray-500 text-sm">{{ getTimeRangeText() }}</p>
+          </div>
+
+          <canvas *ngIf="widget.id === 'mainLineChart'" [id]="'mainLineChart-' + widget.id"></canvas>
+          <canvas *ngIf="widget.id === 'smallLineChart'" [id]="'smallLineChart-' + widget.id"></canvas>
+          <canvas *ngIf="widget.id === 'barChart'" [id]="'barChart-' + widget.id"></canvas>
+
+          <div *ngIf="widget.id === 'salesTable'" class="h-full overflow-auto custom-scrollbar text-sm">
+            <div class="flex flex-wrap justify-between items-center pb-3 gap-3">
+              <div class="flex-1 min-w-[140px] max-w-sm">
+                <select [(ngModel)]="globalFilters.region" (change)="applyGlobalFilters()"
+                  class="border border-gray-300 rounded px-3 py-2 text-sm focus:ring-purple-500 focus:border-purple-500 w-full bg-white">
+                  <option value="all">All Regions</option>
+                  <option value="north">USA</option>
+                  <option value="europe">Europe</option>
+                  <option value="asia">Asia</option>
+                </select>
+              </div>
+              <div class="flex items-center gap-2 ml-auto">
+                <button (click)="exportCSV()" class="px-3 py-2 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50">Export CSV</button>
+                  <button (click)="exportDashboardPDF()" class="px-3 py-2 text-sm bg-purple-600 text-white rounded hover:bg-purple-700">Export PDF</button>
+                <div class="relative w-56">
+                  <input type="text" placeholder="Search by name or email" 
+                    [(ngModel)]="tableSearch"
+                    class="border border-gray-300 rounded px-3 py-2 text-sm focus:ring-purple-500 focus:border-purple-500 w-full pr-8">
+                  <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400 text-xs"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <table class="min-w-full text-sm text-left">
+              <thead class="bg-gray-100 text-gray-700 sticky top-0">
+                <tr>
+                  <th (click)="sortBy('name')" class="px-3 py-2 font-medium border-b cursor-pointer select-none">
+                    Name <span class="ml-1 text-xs">{{ getSortIcon('name') }}</span>
+                  </th>
+                  <th (click)="sortBy('email')" class="px-3 py-2 font-medium border-b cursor-pointer select-none">
+                    Email <span class="ml-1 text-xs">{{ getSortIcon('email') }}</span>
+                  </th>
+                  <th (click)="sortBy('country')" class="px-3 py-2 font-medium border-b cursor-pointer select-none">
+                    Country <span class="ml-1 text-xs">{{ getSortIcon('country') }}</span>
+                  </th>
+                  <th (click)="sortBy('sales')" class="px-3 py-2 font-medium border-b cursor-pointer select-none">
+                    Sales <span class="ml-1 text-xs">{{ getSortIcon('sales') }}</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of paginatedSalesTable" class="border-b hover:bg-gray-50 transition-colors">
+                  <td class="px-3 py-2 font-medium">{{ row.name }}</td>
+                  <td class="px-3 py-2 text-gray-600">{{ row.email }}</td>
+                  <td class="px-3 py-2">{{ row.country }}</td>
+                  <td class="px-3 py-2 text-green-600 font-medium">{{ row.sales }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- Pagination Controls -->
+            <div class="flex items-center justify-between mt-3 text-sm">
+              <span class="text-gray-600">{{ displayRange }}</span>
+              <div class="flex items-center gap-2">
+                <button (click)="previousPage()" [disabled]="currentPage === 1"
+                        class="px-2 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed">Prev</button>
+                <span>Page {{ currentPage }} / {{ totalPages }}</span>
+                <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                        class="px-2 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <!-- Resize Handles-->
+      <button 
+        (mousedown)="onResizeStart(widget.id, 'vertical', $event)"
+        class="absolute -top-3 left-1/2 -translate-x-1/2 w-7 h-7 rounded-md bg-white border border-gray-300 shadow-sm hidden group-hover:flex items-center justify-center cursor-ns-resize"
+        title="Drag to resize height">
+        <i class="fa-solid fa-up-down text-gray-500 text-xs"></i>
+      </button>
+      <button 
+        (mousedown)="onResizeStart(widget.id, 'horizontal', $event)"
+        class="absolute top-1/2 -right-3 -translate-y-1/2 w-7 h-7 rounded-md bg-white border border-gray-300 shadow-sm hidden group-hover:flex items-center justify-center cursor-ew-resize"
+        title="Drag to resize width">
+        <i class="fa-solid fa-left-right text-gray-500 text-xs"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="widgets.length === 0" class="text-center py-10 bg-white rounded-xl border-2 border-dashed border-gray-300 text-sm">
+    <div class="text-gray-400 mb-2">
+      <i class="fa-solid fa-chart-pie text-4xl"></i>
+    </div>
+    <h3 class="font-semibold text-gray-600 mb-1">No widgets added</h3>
+    <p class="text-gray-500 mb-2">Add widgets to start building your dashboard</p>
+    <button
+      (click)="resetLayout()"
+      class="bg-purple-600 text-white font-medium px-4 py-2 rounded shadow-sm hover:bg-purple-700 transition text-sm">
+      Add Default Widgets
+    </button>
+  </div>
+</div>

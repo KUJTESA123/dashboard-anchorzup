@@ -1,66 +1,49 @@
-# AnchorzupDashboard
+# Anchorzup Dashboard
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.7.
+A customizable dashboard application built with Angular 20.
 
-## Development server
+## Setup and Run
 
-To start a local development server, run:
-
+1. Install dependencies:
 ```bash
-ng serve
+npm install
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+2. Start the development server:
 ```bash
-ng generate component component-name
+npm start
 ```
+The app will open at `http://localhost:4200/`
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+3. Build for production:
 ```bash
-ng generate --help
+npm run build
 ```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-
 
 ## Used Libraries 
 
+**Production Dependencies:**
+```bash
+    "@angular/cdk": "^20.2.10",
+    "@angular/common": "^20.3.0",
+    "@angular/compiler": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@angular/forms": "^20.3.9",
+    "@angular/platform-browser": "^20.3.0",
+    "@angular/router": "^20.3.0",
+    "angular-gridster2": "^20.2.3",
+    "angular-resizable-element": "^8.0.0",
+    "chart.js": "^4.4.1",
+    "chartjs-plugin-zoom": "^2.2.0",
+    "jspdf": "^3.0.3",
+    "jspdf-autotable": "^5.0.2",
+    "ng2-charts": "^6.0.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+```
+
+**Development Dependencies:**
 ```bash
     "@angular/build": "^20.3.7",
     "@angular/cli": "^20.3.7",
@@ -72,5 +55,6 @@ For more information on using the Angular CLI, including detailed command refere
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "tailwindcss": "^3.4.18",
     "typescript": "~5.9.2"
 ```
